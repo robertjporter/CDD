@@ -275,6 +275,53 @@ add_action('login_head', 'my_custom_login');
 		return $output;
 	}
 	
-	
 	//ROUND 2
+	
+	wp_enqueue_script('jquery');
+
+	function addCustomer(){
+
+	global $wpdb;
+
+	$name = $_POST['name'];
+	$phone = $_POST['phone'];
+	$email = $_POST['email'];
+	$address = $_POST['address'];
+
+	if($wpdb->insert('customers',array(
+		'name'=>$name,
+		'email'=>$email,
+		'address'=>$address,
+		'phone'=>$phone
+	))===FALSE){
+
+	echo "Error";
+
+	}
+	else {
+	echo "Customer '".$name. "' successfully added, row ID is ".$wpdb->insert_id;
+
+	}
+	die();
+	}
+	add_action('wp_ajax_addCustomer', 'addCustomer');
+	add_action('wp_ajax_nopriv_addCustomer', 'addCustomer'); // not really needed
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
 	

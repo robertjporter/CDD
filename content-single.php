@@ -50,7 +50,8 @@
 		?><br>
 		<?php echo getDevVoteLink(get_the_ID());?>
 		<br>
-		<?php
+		
+		<?php 
 			printf(
 				$meta_text,
 				$category_list,
