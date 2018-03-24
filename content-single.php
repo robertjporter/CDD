@@ -48,7 +48,7 @@
 			} // end check for categories on this blog
 			
 		?><br>
-		<?php echo getDevVoteLink(get_the_ID());?>
+		<?php //echo getDevVoteLink(get_the_ID());?>
 		<br>
 		
 		<?php 

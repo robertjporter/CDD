@@ -200,118 +200,37 @@ add_action('login_head', 'my_custom_login');
 
 	
 	//MY VERSION
-	//Spend Points action
-	add_action('wp_ajax_nopriv_dev-vote', 'dev_vote');
-	add_action('wp_ajax_dev-vote', 'dev_vote');
-	
 	wp_enqueue_script('vote_dev', get_template_directory_uri().'/includes/js/dev-vote.js', array('jquery'), '1.0', true );
 	wp_localize_script('vote_dev', 'ajax_var', array(
 		'url' => admin_url('admin-ajax.php'),
 		'nonce' => wp_create_nonce('ajax-nonce')
 	));
 	
-	function dev_vote(){
-		// Check for nonce security
-		$nonce = $_POST['nonce'];
-		$post_id = $_POST['post_id'];
-		$user_ID = get_current_user_id();
-		$user_dev_points = get_user_meta($user_ID, 'user_points', true);
-		
-		if ( ! wp_verify_nonce( $nonce, 'ajax-nonce' ) )
-			die ( 'Busted!');
-		
-		if(isset($_POST['dev_vote']))
-		{
-			if($user_dev_points>0){
-				add_post_meta($post_id, "supporter_id", $user_ID);
-				update_user_meta($user_ID, "user_points", $user_dev_points-1);
-			}
-		}
-		exit;
-	}
-	
-	function dev_remove(){
-		// Check for nonce security
-		$nonce = $_POST['nonce'];
-		$post_id = $_POST['post_id'];
-		$user_ID = get_current_user_id();
-		$user_dev_points = get_user_meta($user_ID, 'user_points', true);
-		
-		if ( ! wp_verify_nonce( $nonce, 'ajax-nonce' ) )
-			die ( 'Busted!');
-		
-		if(isset($_POST['dev_vote']))
-		{
-			if($user_dev_points>0){
-				add_post_meta($post_id, "supporter_id", $user_ID);
-				update_user_meta($user_ID, "user_points", $user_dev_points-1);
-			}
-		}
-		exit;
-	}
-	
-	function getDevVoteLink($post_id)
-	{
-		$user_ID = get_current_user_id();
-		$user_dev_points = get_user_meta($user_ID, 'user_points', true);
-		$vote_count = count (get_post_meta($post_id, "supporter_id", false));
-		
-		$output .= "<br>This Feature has <span class='vote_count'>".$vote_count."</span> Dev-points<br>";
-		
-		if($user_ID){
-			$output .= "You are user ".$user_ID." and you have <span class='user_dev_points'>".$user_dev_points."</span> Dev-points.";
-			
-			$output .= "<br><button data-post_id='".$post_id."' data-vote_count='".$vote_count."' data-user_dev_points='".$user_dev_points."' type='button' class='btn btn-success dev-vote'>Support With Dev Point.</button>";
-			
-			$output .= "<br><button data-post_id='".$post_id."' data-vote_count='".$vote_count."' data-user_dev_points='".$user_dev_points."' type='button' class='btn btn-info dev-vote'>Add Another Dev-Point.</button>";
-			
-			$output .= " <button data-post_id='".$post_id."' data-vote_count='".$vote_count."' data-user_dev_points='".$user_dev_points."' type='button' class='btn btn-danger dev-remove'>Remove One Dev-Point.</button>";
-		} else { 
-			$output .= "Please Login or Signup to vote.";
-		}
-		
-		
-		
-		return $output;
-	}
-	
-	//ROUND 2
-	wp_enqueue_script('jquery');
-	function addCustomer(){
-		global $wpdb;
-		$name = $_POST['name'];
-		$phone = $_POST['phone'];
-		$email = $_POST['email'];
-		$address = $_POST['address'];
-
-		if($wpdb->insert('customers',array(
-			'name'=>$name,
-			'email'=>$email,
-			'address'=>$address,
-			'phone'=>$phone
-		))===FALSE){
-			echo "Error";
-		}
-		else {
-			echo "Customer '".$name. "' successfully added, row ID is ".$wpdb->insert_id;
-		}
-		die();
-	}
-	
-	add_action('wp_ajax_addCustomer', 'addCustomer');
-	add_action('wp_ajax_nopriv_addCustomer', 'addCustomer');
-	
 	
 	//MINE
-	function dev_vote2(){
-		$test_data = $_POST['test_data'];
-		echo "Hello dev_vote2";
-		add_post_meta(1, "test", "$test_data");
+	//add point
+	function dev_vote_add(){
+		$post_id = $_POST['post_id'];
+		$user_id = $_POST['user_id'];
+		$user_dev_points = $_POST['user_dev_points'];
+		
+		add_post_meta($post_id, "supporter_id", $user_id);
 		die();
 	}
+	add_action('wp_ajax_dev-vote-add', 'dev_vote_add');
+	add_action('wp_ajax_nopriv_dev-vote-add', 'dev_vote_add');
 	
-	add_action('wp_ajax_dev-vote2', 'dev_vote2');
-	add_action('wp_ajax_nopriv_dev-vote2', 'dev_vote2');
+	//remove point
+	function dev_vote_remove(){
+		$post_id = $_POST['post_id'];
+		$user_id = $_POST['user_id'];
+		$user_dev_points = $_POST['user_dev_points'];
+		
+		add_post_meta($post_id, "supporter_id remove", $user_id);
+		die();
+	}
+	add_action('wp_ajax_dev-vote-remove', 'dev_vote_remove');
+	add_action('wp_ajax_nopriv_dev-remove', 'dev_vote_remove');
 	
 	
 	
