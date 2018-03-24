@@ -276,47 +276,42 @@ add_action('login_head', 'my_custom_login');
 	}
 	
 	//ROUND 2
-	
 	wp_enqueue_script('jquery');
-
 	function addCustomer(){
+		global $wpdb;
+		$name = $_POST['name'];
+		$phone = $_POST['phone'];
+		$email = $_POST['email'];
+		$address = $_POST['address'];
 
-	global $wpdb;
-
-	$name = $_POST['name'];
-	$phone = $_POST['phone'];
-	$email = $_POST['email'];
-	$address = $_POST['address'];
-
-	if($wpdb->insert('customers',array(
-		'name'=>$name,
-		'email'=>$email,
-		'address'=>$address,
-		'phone'=>$phone
-	))===FALSE){
-
-	echo "Error";
-
+		if($wpdb->insert('customers',array(
+			'name'=>$name,
+			'email'=>$email,
+			'address'=>$address,
+			'phone'=>$phone
+		))===FALSE){
+			echo "Error";
+		}
+		else {
+			echo "Customer '".$name. "' successfully added, row ID is ".$wpdb->insert_id;
+		}
+		die();
 	}
-	else {
-	echo "Customer '".$name. "' successfully added, row ID is ".$wpdb->insert_id;
-
-	}
-	die();
-	}
+	
 	add_action('wp_ajax_addCustomer', 'addCustomer');
-	add_action('wp_ajax_nopriv_addCustomer', 'addCustomer'); // not really needed
+	add_action('wp_ajax_nopriv_addCustomer', 'addCustomer');
 	
 	
+	//MINE
+	function dev_vote2(){
+		$test_data = $_POST['test_data'];
+		echo "Hello dev_vote2";
+		add_post_meta(1, "test", "$test_data");
+		die();
+	}
 	
-	
-	
-	
-	
-	
-	
-	
-	
+	add_action('wp_ajax_dev-vote2', 'dev_vote2');
+	add_action('wp_ajax_nopriv_dev-vote2', 'dev_vote2');
 	
 	
 	
