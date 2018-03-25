@@ -199,22 +199,21 @@ add_action('login_head', 'my_custom_login');
 	add_action( 'manage_users_custom_column', 'theme_show_user_points_data', 10, 3 );
 
 	
-	//MY VERSION
-	wp_enqueue_script('vote_dev', get_template_directory_uri().'/includes/js/dev-vote.js', array('jquery'), '1.0', true );
-	wp_localize_script('vote_dev', 'ajax_var', array(
-		'url' => admin_url('admin-ajax.php'),
-		'nonce' => wp_create_nonce('ajax-nonce')
-	));
 	
 	
 	//MINE
-	//add point
+	wp_enqueue_script('jquery');
+	//Add points
 	function dev_vote_add(){
 		$post_id = $_POST['post_id'];
 		$user_id = $_POST['user_id'];
 		$user_dev_points = $_POST['user_dev_points'];
+		$vote_count = $_POST['vote_count'];
+		$user_support = $_POST['user_support'];
+		$press_count = $_POST['press_count'];
 		
-		add_post_meta($post_id, "supporter_id", $user_id);
+		add_post_meta($post_id, "supporter_id", 2);
+		update_user_meta( $user_id, "user_points", $user_dev_points-$press_count);
 		die();
 	}
 	add_action('wp_ajax_dev-vote-add', 'dev_vote_add');
@@ -225,8 +224,12 @@ add_action('login_head', 'my_custom_login');
 		$post_id = $_POST['post_id'];
 		$user_id = $_POST['user_id'];
 		$user_dev_points = $_POST['user_dev_points'];
+		$vote_count = $_POST['vote_count'];
+		$user_support = $_POST['user_support'];
+		$press_count = $_POST['press_count'];
 		
-		add_post_meta($post_id, "supporter_id remove", $user_id);
+		delete_post_meta($post_id, $supporter_id, $user_id);
+		update_user_meta( $user_id, "user_points", $user_support+$press_count);
 		die();
 	}
 	add_action('wp_ajax_dev-vote-remove', 'dev_vote_remove');
