@@ -15,15 +15,6 @@ get_header(); ?>
 	$raw_user_support = array_count_values(get_post_meta($post_id, "supporter_id", false));
 	$user_support = $raw_user_support[$user_ID];
 	
-	echo "<pre>";
-	print_r (get_post_meta($post_id, "supporter_id", false));
-	echo "<br>";
-	echo "</pre>";
-	echo "<pre>";
-	print_r ($raw_user_support);
-	echo "</pre>";
-	print_r ($user_support);
-	
 	//Just fxing a bug (blank user support wreaks buttons data passing over to AJAX)
 	if (empty($user_support)) {
 		$user_support=0;
@@ -35,17 +26,19 @@ get_header(); ?>
 	if($user_ID){?>
 		You are user <?php echo $user_ID; ?> and you have <span class='user_dev_points'><?php echo $user_dev_points; ?></span> Dev-points. <span class='user_support'><?php echo $user_support; ?></span> of these were added by you.
 		
-		<br><button id="dev-vote" type='button' class='dev-vote2 btn btn-success'
+		<button id="dev-vote-add-one" type='button' 
+		class='dev-vote btn btn-success <?php if ($user_support > 0){echo ' hidden';}?>'
 		data-post_id=<?php echo $post_id; ?> 
 		data-user_id=<?php echo $user_ID; ?> 
 		data-user_dev_points=<?php echo $user_dev_points; ?> 
 		data-vote_count=<?php echo $vote_count; ?>
 		data-user_support=<?php echo $user_support; ?>
 		data-press_type="add">
-			Add One Dev-Point!
+			Add One of Your Dev-Points!
 		</button>
 		
-		<br><button id="dev-vote" type='button' class='dev-vote2 btn btn-info'
+		<button id="dev-vote-add-another" type='button' 
+		class='dev-vote btn btn-info <?php if ($user_support < 1){echo ' hidden';}?>'
 		data-post_id=<?php echo $post_id; ?> 
 		data-user_id=<?php echo $user_ID; ?> 
 		data-user_dev_points=<?php echo $user_dev_points; ?> 
@@ -55,7 +48,8 @@ get_header(); ?>
 			Add Another Dev-Point.
 		</button>
 		
-		<button id="dev-remove" type='button' class='dev-vote2 btn btn-danger'
+		<button id="dev-vote-remove" type='button' 
+		class='dev-vote btn btn-danger <?php if ($user_support < 1){echo ' hidden';}?>'
 		data-post_id=<?php echo $post_id; ?> 
 		data-user_id=<?php echo $user_ID; ?> 
 		data-user_dev_points=<?php echo $user_dev_points; ?> 
@@ -65,7 +59,7 @@ get_header(); ?>
 			Take Back All Dev-Points.
 		</button>
 		
-		<br><button id="dev-vote" type='button' class='dev-vote2 btn btn-warning'>
+		<br><br><button type='button' class='dev-vote btn btn-warning'>
 			Get Dev-Points.
 		</button>
 		
@@ -80,8 +74,8 @@ get_header(); ?>
 		user_id = 0;
 		user_dev_points = 0;
 		vote_count = 0;
-	
-		jQuery(".dev-vote2").click(function(){
+		
+		jQuery(".dev-vote").click(function(){
 			heart = jQuery(this);
 			
 			test_data = "hey you!";
@@ -118,6 +112,12 @@ get_header(); ?>
 							//step up press_count
 							press_count++
 							console.log("press_count after edit"+press_count);
+							//switch hide class if needed
+							if (user_dev_points = 1){
+								jQuery( "#dev-vote-add-one" ).addClass( "hidden" );
+								jQuery( "#dev-vote-add-another" ).removeClass( "hidden" );
+								jQuery( "#dev-vote-remove" ).removeClass( "hidden" );
+							}
 						}
 					});
 				} else if (press_type == "remove"){
@@ -136,6 +136,10 @@ get_header(); ?>
 							//step up press_count
 							press_count = 1;
 							console.log("press_count after edit "+press_count);
+							//reset button hide classes
+							jQuery( "#dev-vote-add-one" ).removeClass( "hidden" );
+							jQuery( "#dev-vote-add-another" ).addClass( "hidden" );
+							jQuery( "#dev-vote-remove" ).addClass( "hidden" );
 						}
 					});
 				} else {
