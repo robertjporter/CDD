@@ -212,7 +212,7 @@ add_action('login_head', 'my_custom_login');
 		$user_support = $_POST['user_support'];
 		$press_count = $_POST['press_count'];
 		
-		add_post_meta($post_id, "supporter_id", 2);
+		add_post_meta($post_id, "supporter_id", $user_id);
 		update_user_meta( $user_id, "user_points", $user_dev_points-$press_count);
 		die();
 	}
@@ -228,8 +228,8 @@ add_action('login_head', 'my_custom_login');
 		$user_support = $_POST['user_support'];
 		$press_count = $_POST['press_count'];
 		
-		delete_post_meta($post_id, $supporter_id, $user_id);
-		update_user_meta( $user_id, "user_points", $user_support+$press_count);
+		delete_post_meta($post_id, "supporter_id", $user_id);
+		update_user_meta( $user_id, "user_points", $user_dev_points+$user_support);
 		die();
 	}
 	add_action('wp_ajax_dev-vote-remove', 'dev_vote_remove');
