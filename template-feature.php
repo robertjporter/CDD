@@ -68,7 +68,7 @@ get_header(); ?>
 	<?php } ?>
 
 	<script type="text/javascript">
-		press_count = 1;
+		press_count = 0;
 		
 		post_id = 0;
 		user_id = 0;
@@ -93,7 +93,11 @@ get_header(); ?>
 			console.log("user_dev_points: "+user_dev_points);
 			console.log("vote_count: "+vote_count);
 			console.log("user_support: "+user_support);
-			console.log("press_type updated to: "+press_type);
+			console.log("press_type: "+press_type);
+			
+			console.log("press_counto: "+press_type);
+			press_count++;
+			console.log("press_count updated to: "+press_type);
 			
 			if (user_dev_points > 0){
 				console.log("User has dev points");
@@ -110,7 +114,7 @@ get_header(); ?>
 							jQuery('.user_dev_points').text(user_dev_points-press_count);
 							jQuery('.user_support').text(user_support+press_count);
 							//step up press_count
-							press_count++
+							
 							console.log("press_count after edit"+press_count);
 							//switch hide class if needed
 							if (user_dev_points = 1){
@@ -118,6 +122,10 @@ get_header(); ?>
 								jQuery( "#dev-vote-add-another" ).removeClass( "hidden" );
 								jQuery( "#dev-vote-remove" ).removeClass( "hidden" );
 							}
+						},
+						error: function(data){
+							console.log("ajax send-off to add FAILED");
+							press_count--;
 						}
 					});
 				} else if (press_type == "remove"){
